@@ -7,7 +7,7 @@ import axios from "axios";
 import { API_URL, userToken } from "../components/Variable";
 
 const ShoppingPage = () => {
-const userData=userToken()
+  const userData = userToken()
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([
     "Roundneck Tshirt",
@@ -55,18 +55,18 @@ const userData=userToken()
 
   const handleAddToCart = async (e, product) => {
     e.stopPropagation(); // Stop event from propagating
-  
+
     try {
-      const token =userData.token // Ensure user is logged in
+      const token = userData.token // Ensure user is logged in
       if (!token) {
         alert("Please login to add items to cart.");
         navigate("/login");
         return;
       }
-  
+
       await axios.post(
         `${API_URL}/cart/add`,
-        { productId: product.productId, quantity: 1 ,userId:userData.userId,size:'S'},
+        { productId: product.productId, quantity: 1, userId: userData.userId, size: 'S' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert(`${product.name} has been added to your cart.`);
@@ -75,28 +75,25 @@ const userData=userToken()
       alert("Failed to add product to cart. Please try again.");
     }
   };
-  
 
-  const filteredProducts = products
-    .filter(
-      (product) => !selectedCategory || product.category === selectedCategory
-    )
-    .filter(
-      (product) =>
-        product.price >= priceRange.min && product.price <= priceRange.max
-    )
-    .sort((a, b) => {
-      switch (sortOption) {
-        case "rating":
-          return b.rating - a.rating;
-        case "priceLowHigh":
-          return a.price - b.price;
-        case "priceHighLow":
-          return b.price - a.price;
-        default:
-          return 0;
-      }
-    });
+
+  const filteredProducts = products && products?.filter(
+    (product) => !selectedCategory || product.category === selectedCategory
+  )?.filter(
+    (product) =>
+      product.price >= priceRange.min && product.price <= priceRange.max
+  )?.sort((a, b) => {
+    switch (sortOption) {
+      case "rating":
+        return b.rating - a.rating;
+      case "priceLowHigh":
+        return a.price - b.price;
+      case "priceHighLow":
+        return b.price - a.price;
+      default:
+        return 0;
+    }
+  });
 
   const [minPrice, setMinPrice] = useState(100);
   const [maxPrice, setMaxPrice] = useState(5000);
